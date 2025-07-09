@@ -2066,7 +2066,13 @@ export class AiAssistantService {
     }
     
     if (model === Models.OpenAI) {
-      const OpenAIclient = await this.createOpenAIClient(authKey);
+      let OpenAIclient;
+      try {
+        OpenAIclient = await this.createOpenAIClient(authKey);
+      } catch (err) {
+        console.error('Failed to initialize OpenAI client:', err);
+        throw new BadRequestException('Invalid API Key');
+      }
       const { writeFile, unlink } = fs.promises;
       
       const results: { fileId: string; fileUrl: string; }[] = [];
