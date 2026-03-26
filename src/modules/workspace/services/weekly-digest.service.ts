@@ -379,9 +379,17 @@ export class WeeklyDigestService {
 
           const unsubscribeLink = `${appUrl}/api/user/unsubscribe-weekly-digest?userId=${user._id}`;
 
+          const isDev = this.configService
+            .get<string>("APP_ENV")
+            ?.toUpperCase()
+            .includes("DEV");
+          const recipientEmail = isDev
+            ? WeeklyDigestService.QA_DIGEST_EMAIL
+            : user.email;
+
           const mailOptions = {
             from: senderEmail,
-            to: user.email,
+            to: recipientEmail,
             template: "weeklyDigestEmail",
             subject: "Your Weekly Digest 📊",
             headers: {
@@ -413,7 +421,7 @@ export class WeeklyDigestService {
           };
 
           await this.emailService.sendEmail(transporter, mailOptions);
-          this.logger.log(`Weekly digest sent to ${user.email}`);
+          this.logger.log(`Weekly digest sent to ${recipientEmail}`);
         } catch (error) {
           this.logger.error(
             `Failed to send weekly digest to ${userData.user.email}: ${error.message}`,
