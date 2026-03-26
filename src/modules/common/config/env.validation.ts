@@ -9,6 +9,7 @@ import {
 
 export enum Env {
   DEV = "DEV",
+  LOCAL = "LOCAL",
   PROD = "PROD",
 }
 

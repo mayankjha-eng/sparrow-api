@@ -72,7 +72,7 @@ export class WeeklyDigestService {
       emailConcurrency: WeeklyDigestService.DEFAULT_EMAIL_CONCURRENCY,
     };
 
-    const qaDigestEmail = WeeklyDigestService.QA_DIGEST_EMAIL;
+    // QA digest email used only when sending emails in DEV environment
 
     // Time range for the digest (last 1 min for testing, or use getLastWeekRange() for production)
     const end = new Date();
@@ -95,7 +95,6 @@ export class WeeklyDigestService {
       const usersBatch = await this.getUsersBatch(
         config.userBatchSize,
         lastCursor,
-        qaDigestEmail,
       );
 
       if (usersBatch.length === 0) {
@@ -161,12 +160,10 @@ export class WeeklyDigestService {
   private async getUsersBatch(
     batchSize: number,
     lastCursor?: ObjectId,
-    qaEmail?: string,
   ): Promise<WithId<User>[]> {
     return this.userRepository.getUsersBatchForWeeklyDigest(
       batchSize,
       lastCursor,
-      qaEmail,
     );
   }
 
